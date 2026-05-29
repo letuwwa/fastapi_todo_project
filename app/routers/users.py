@@ -23,6 +23,6 @@ def register_user(user: User):
     if len(user.password) == 0:
         raise HTTPException(status_code=400, detail="password cannot be empty")
 
-    json_tool_instance.write({user.username: user.password})
+    json_tool_instance.write_user({user.username: user.password})
 
     return JSONResponse(status_code=201, content={"status": "success"})
