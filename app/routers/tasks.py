@@ -13,12 +13,6 @@ class CreateTask(BaseModel):
     is_done: bool
     username: str
     password: str
-    task_id: str = str(uuid.uuid4())
-
-
-class UserCreds(BaseModel):
-    username: str
-    password: str
 
 
 @router.post("")
@@ -28,17 +22,19 @@ def post_task(task: CreateTask):
         raise HTTPException(status_code=401, detail="invalid credentials")
 
     tasks_tool_instance = JSONTool("tasks.json")
-    tasks_tool_instance.write_task(task.model_dump())
+    task_data_dict = task.model_dump()
+    task_data_dict.update({"task_id": str(uuid.uuid4())})
+    tasks_tool_instance.write_task(task_data_dict)
 
     return JSONResponse(status_code=201, content={"status": "created"})
 
-@router.delete("/{task_id}")
-def delete_task(task_id: str, user: UserCreds):
+@router.delete("/{username}/{task_id:str}")
+def delete_task(task_id: str, username: str):
     users_data = JSONTool("users.json").read()
-    if users_data.get(user.username) != user.password:
-        raise HTTPException(status_code=401, detail="invalid credentials")
+    if not users_data.get(username):
+        raise HTTPException(status_code=401, detail="user not found")
 
     tasks_tool_instance = JSONTool("tasks.json")
-    tasks_tool_instance.delete_task(username=user.username, task_id=task_id)
+    tasks_tool_instance.delete_task(username=username, task_id=task_id)
 
     return JSONResponse(status_code=200, content={"status": "deleted"})
