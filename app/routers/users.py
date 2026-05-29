@@ -1,9 +1,17 @@
 from fastapi import APIRouter
+from pydantic import BaseModel
 
 
 router = APIRouter(prefix="/users", tags=["users"])
+FAKE_DB = {}
 
 
-@router.get("")
-def users_check():
-    return {"url": "/users"}
+class User(BaseModel):
+    username: str
+    password: str
+
+
+@router.post("/register")
+def register_user(user: User):
+    FAKE_DB[user.username] = user.password
+    return {"message": "user registered"}
