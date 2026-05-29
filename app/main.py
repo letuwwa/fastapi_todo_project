@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from app import routers as basic_routers
+from .routers import user_router, task_router
 
 
 app = FastAPI()
-app.include_router(basic_routers.router)
+app.include_router(user_router)
+app.include_router(task_router)
 
 
 @app.get("/")
