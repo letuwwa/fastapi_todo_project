@@ -3,3 +3,6 @@
 
 __pycache__/
 **/__pycache__/
+
+users.json
+tasks.json
