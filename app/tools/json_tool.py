@@ -30,3 +30,9 @@ class JSONTool:
             )
         with open(self.filename, "w") as f:
             json.dump(past_data, f, indent=4)
+
+    def delete_task(self, username: str, task_id: str):
+        past_data = self.read()
+        past_data[username] = [task for task in past_data[username] if task["id"] != task_id]
+        with open(self.filename, "w") as f:
+            json.dump(past_data, f, indent=4)
