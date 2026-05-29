@@ -28,8 +28,8 @@ def post_task(task: CreateTask):
 
     return JSONResponse(status_code=201, content={"status": "created"})
 
-@router.delete("/{username}/{task_id:str}")
-def delete_task(task_id: str, username: str):
+@router.delete("/{username:str}")
+def delete_task(username: str, task_id: str):
     users_data = JSONTool("users.json").read()
     if not users_data.get(username):
         raise HTTPException(status_code=401, detail="user not found")
