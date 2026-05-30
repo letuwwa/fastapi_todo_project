@@ -46,3 +46,13 @@ class JSONTool:
         ]
         with open(self.filename, "w") as f:
             json.dump(past_data, f, indent=4)
+
+    def update_task_done(self, username: str, task_id: str):
+        past_data = self.read()
+        if past_data.get(username):
+            for task in past_data[username]:
+                if task["task_id"] == task_id:
+                    task["is_done"] = True
+                    break
+            with open(self.filename, "w") as f:
+                json.dump(past_data, f, indent=4)
