@@ -1,5 +1,6 @@
-import uuid
 from ..tools import JSONTool
+
+import uuid
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, HTTPException
@@ -58,3 +59,11 @@ def get_user_tasks(username, user_password: UserPassword):
     users_tasks = JSONTool("tasks.json").read().get(username)
 
     return JSONResponse(status_code=200, content=users_tasks)
+
+
+@router.put("/done/{username:str}")
+def update_task_done(username: str, task_id: str):
+    tasks_tool_instance = JSONTool("tasks.json")
+    tasks_tool_instance.update_task_done(username=username, task_id=task_id)
+
+    return JSONResponse(status_code=200, content={"status": "updated"})
