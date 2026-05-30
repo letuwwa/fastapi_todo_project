@@ -7,16 +7,20 @@ class JSONTool:
 
     def read(self):
         try:
-            with open(self.filename, "r") as f:
+            with open(self.filename, "rb") as f:
                 return json.load(f)
         except FileNotFoundError:
             return {}
 
+    def write(self, data: dict):
+        with open(self.filename, "wb") as f:
+            json_data = json.dumps(data, indent=4)
+            f.write(json_data.encode("utf-8"))
+
     def write_user(self, data: dict):
         past_data = self.read()
         past_data.update(data)
-        with open(self.filename, "w") as f:
-            json.dump(past_data, f, indent=4)
+        self.write(past_data)
 
     def write_task(self, data: dict):
         past_data = self.read()
@@ -36,16 +40,14 @@ class JSONTool:
                     "is_done": data["is_done"],
                 },
             )
-        with open(self.filename, "w") as f:
-            json.dump(past_data, f, indent=4)
+        self.write(past_data)
 
     def delete_task(self, username: str, task_id: str):
         past_data = self.read()
         past_data[username] = [
             task for task in past_data[username] if task["task_id"] != task_id
         ]
-        with open(self.filename, "w") as f:
-            json.dump(past_data, f, indent=4)
+        self.write(past_data)
 
     def update_task_done(self, username: str, task_id: str):
         past_data = self.read()
@@ -54,5 +56,4 @@ class JSONTool:
                 if task["task_id"] == task_id:
                     task["is_done"] = True
                     break
-            with open(self.filename, "w") as f:
-                json.dump(past_data, f, indent=4)
+            self.write(past_data)
