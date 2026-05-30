@@ -15,6 +15,10 @@ class CreateTask(BaseModel):
     password: str
 
 
+class UserPassword(BaseModel):
+    password: str
+
+
 @router.post("")
 def post_task(task: CreateTask):
     users_data = JSONTool("users.json").read()
@@ -28,6 +32,7 @@ def post_task(task: CreateTask):
 
     return JSONResponse(status_code=201, content={"status": "created"})
 
+
 @router.delete("/{username:str}")
 def delete_task(username: str, task_id: str):
     users_data = JSONTool("users.json").read()
@@ -38,3 +43,18 @@ def delete_task(username: str, task_id: str):
     tasks_tool_instance.delete_task(username=username, task_id=task_id)
 
     return JSONResponse(status_code=200, content={"status": "deleted"})
+
+
+@router.post("/{username:str}")
+def get_user_tasks(username, user_password: UserPassword):
+    """
+    I've made this GET endpoint as POST in order
+    not to expose the password in the URL.
+    """
+    users_data = JSONTool("users.json").read()
+    if users_data.get(username) != user_password.password:
+        raise HTTPException(status_code=401, detail="invalid credentials")
+
+    users_tasks = JSONTool("tasks.json").read().get(username)
+
+    return JSONResponse(status_code=200, content=users_tasks)
