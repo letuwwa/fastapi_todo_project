@@ -22,6 +22,10 @@ class UserPassword(BaseModel):
 
 @router.post("")
 def post_task(task: CreateTask):
+    """
+    creating a task, requires a username and password
+    assigning a unique id to the task, uuid4 format
+    """
     users_data = JSONTool("users.json").read()
     if users_data.get(task.username) != task.password:
         raise HTTPException(status_code=401, detail="invalid credentials")
@@ -36,6 +40,9 @@ def post_task(task: CreateTask):
 
 @router.delete("/{username:str}")
 def delete_task(username: str, task_id: str):
+    """
+    removing a task by filtering out the list, no password required
+    """
     users_data = JSONTool("users.json").read()
     if not users_data.get(username):
         raise HTTPException(status_code=401, detail="user not found")
@@ -63,6 +70,9 @@ def get_user_tasks(username, user_password: UserPassword):
 
 @router.put("/done/{username:str}")
 def update_task_done(username: str, task_id: str):
+    """
+    lasy updating, if a task doesnt exist no error is raised
+    """
     tasks_tool_instance = JSONTool("tasks.json")
     tasks_tool_instance.update_task_done(username=username, task_id=task_id)
 

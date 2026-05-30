@@ -15,6 +15,9 @@ class User(BaseModel):
 
 @router.post("/register")
 def register_user(user: User):
+    """
+    simple register endpoint
+    """
     json_tool_instance = JSONTool("users.json")
 
     json_users_data = json_tool_instance.read()

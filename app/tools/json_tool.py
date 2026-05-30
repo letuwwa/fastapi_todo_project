@@ -2,6 +2,10 @@ import json
 
 
 class JSONTool:
+    """
+    JSONTool is a class that operates on JSON files, keeping file operations
+    away from endpoints
+    """
     def __init__(self, filename: str):
         self.filename = filename
 
